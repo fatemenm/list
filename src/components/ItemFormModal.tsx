@@ -20,19 +20,38 @@ type ItemModalProps = {
   editingItem?: Item;
 };
 
-const initialForm: FormInputs = { title: "", subtitle: "" };
+type ModalTexts = {
+  title: string;
+  description: string;
+  primaryButton: string;
+};
 
-export function ItemModal({
+const initialForm: FormInputs = { title: "", subtitle: "" };
+const defaultModalTexts = {
+  title: "Create Item",
+  description: "Create a new item.",
+  primaryButton: "Create",
+};
+
+export function ItemFormModal({
   isOpen,
   onClose,
   onSubmit,
   editingItem,
 }: ItemModalProps) {
   const [form, setForm] = useState<FormInputs>(initialForm);
+  const [modalTexts, setModalTexts] = useState<ModalTexts>(defaultModalTexts);
 
   useEffect(() => {
-    if (editingItem)
+    if (editingItem) {
       setForm({ title: editingItem.title, subtitle: editingItem.subtitle });
+      setModalTexts({
+        title: "Edit Item",
+        description: "Update the details of your item.",
+        primaryButton: "Save changes",
+      });
+    }
+    return () => setModalTexts(defaultModalTexts);
   }, [editingItem]);
 
   return (
@@ -47,8 +66,8 @@ export function ItemModal({
           className="flex flex-col gap-6"
         >
           <DialogHeader>
-            <DialogTitle>Create an Item</DialogTitle>
-            <DialogDescription>Create your first item! 🚀</DialogDescription>
+            <DialogTitle>{modalTexts.title}</DialogTitle>
+            <DialogDescription>{modalTexts.description}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
@@ -74,7 +93,7 @@ export function ItemModal({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Add Item</Button>
+            <Button type="submit">{modalTexts.primaryButton}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
