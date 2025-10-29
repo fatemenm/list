@@ -4,20 +4,22 @@ import { Button } from "@/components/ui/button";
 
 export function List({
   items,
-  addItem,
+  onAdd,
+  onEdit,
 }: {
   items: Item[];
-  addItem: () => void;
+  onAdd: () => void;
+  onEdit: (id: string) => void;
 }) {
   return (
     <div className="w-full mt-20 flex flex-col gap-8">
       <div className="flex flex-row justify-between">
         <h1 className="text-3xl font-semibold">Items</h1>
-        <Button onClick={addItem}>Add Item</Button>
+        <Button onClick={onAdd}>Add Item</Button>
       </div>
       <div className="flex flex-col gap-4">
         {items.map((item) => (
-          <ListItem item={item} key={item.id} />
+          <ListItem item={item} key={item.id} onEdit={onEdit} />
         ))}
       </div>
     </div>
