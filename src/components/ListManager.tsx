@@ -1,5 +1,5 @@
 import type { FormInputs, Item } from "@/lib/definitions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmptyList } from "@/components/EmptyList";
 import { List } from "@/components/List";
 import { ItemFormModal } from "./ItemFormModal";
@@ -7,11 +7,26 @@ import ItemDeleteAlert from "./ItemDeleteAlert";
 
 export function ListManager() {
   const [items, setItems] = useState<Item[]>([]);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingItemId, setEditingItemId] = useState<string>("");
   const [deletingItemId, setDeletingItemId] = useState<string>("");
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const editingItem = items.find((item) => item.id === editingItemId);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const items = localStorage.getItem("items");
+    if (!items) return;
+
+    setItems(
+      JSON.parse(items).map((item: Record<string, string>) => ({
+        ...item,
+        createdAt: new Date(item.createdAt),
+        editedAt: item.editedAt ? new Date(item.editedAt) : undefined,
+      }))
+    );
+    setIsLoading(false);
+  }, [isLoading]);
 
   const createItem = (formData: FormInputs) => {
     const newItem = {
@@ -20,13 +35,15 @@ export function ListManager() {
       subtitle: formData.subtitle,
       createdAt: new Date(),
     };
-    setItems([...items, newItem]);
-    setIsOpen(false);
+    const newItems = [...items, newItem];
+    setItems(newItems);
+    localStorage.setItem("items", JSON.stringify(newItems));
   };
 
   const editItem = (id: string, formData: FormInputs) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
+    setEditingItemId("");
+    setItems((prevItems) => {
+      const newItems = prevItems.map((item) =>
         item.id === id
           ? {
               ...item,
@@ -35,10 +52,10 @@ export function ListManager() {
               editedAt: new Date(),
             }
           : item
-      )
-    );
-    setEditingItemId("");
-    setIsOpen(false);
+      );
+      localStorage.setItem("items", JSON.stringify(newItems));
+      return newItems;
+    });
   };
 
   const submitHandler = (data: FormInputs) => {
@@ -47,24 +64,28 @@ export function ListManager() {
     } else {
       createItem(data);
     }
+    setIsModalOpen(false);
   };
 
   const deleteHandler = (id: string) => {
-    setItems((previousItems) => previousItems.filter((item) => item.id !== id));
+    setItems((previousItems) => {
+      const newItems = previousItems.filter((item) => item.id !== id);
+      localStorage.setItem("items", JSON.stringify(newItems));
+      return newItems;
+    });
     setDeletingItemId("");
     setIsAlertOpen(false);
   };
 
-  //   TODO: save to local storage
-
+  if (isLoading) return <div className="mt-100">Loading...</div>;
   return (
     <div className="w-2xl flex h-screen">
       {items.length > 0 ? (
         <List
           items={items}
-          onCreate={() => setIsOpen(true)}
+          onCreate={() => setIsModalOpen(true)}
           onEdit={(id: string) => {
-            setIsOpen(true);
+            setIsModalOpen(true);
             setEditingItemId(id);
           }}
           onDelete={(id: string) => {
@@ -73,19 +94,21 @@ export function ListManager() {
           }}
         />
       ) : (
-        <EmptyList onCreate={() => setIsOpen(true)} />
+        <EmptyList onCreate={() => setIsModalOpen(true)} />
       )}
-      <ItemFormModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onSubmit={submitHandler}
-        editingItem={editingItem}
-      />
-      <ItemDeleteAlert
-        isOpen={isAlertOpen}
-        onClose={() => setIsAlertOpen(false)}
-        onDelete={() => deleteHandler(deletingItemId)}
-      />
+      {isModalOpen && (
+        <ItemFormModal
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={submitHandler}
+          editingItem={editingItem}
+        />
+      )}
+      {isAlertOpen && (
+        <ItemDeleteAlert
+          onClose={() => setIsAlertOpen(false)}
+          onDelete={() => deleteHandler(deletingItemId)}
+        />
+      )}
     </div>
   );
 }

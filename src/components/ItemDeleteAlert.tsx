@@ -10,18 +10,16 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type ItemDeleteAlertProps = {
-  isOpen: boolean;
   onClose: (isOpen: boolean) => void;
   onDelete: () => void;
 };
 
 export default function ItemDeleteAlert({
-  isOpen,
   onClose,
   onDelete,
 }: ItemDeleteAlertProps) {
   return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
+    <AlertDialog defaultOpen={true} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete item</AlertDialogTitle>
