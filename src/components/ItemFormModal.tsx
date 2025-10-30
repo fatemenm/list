@@ -13,6 +13,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 type ItemModalProps = {
   onClose: (open: boolean) => void;
@@ -81,9 +82,13 @@ export function ItemFormModal({
                 id="title"
                 name="title"
               />
-              {errors.title && (
-                <p className="text-red-600">{errors.title.message}</p>
-              )}
+              <p
+                className={cn("text-red-600 invisible min-h-5 text-sm", {
+                  visible: errors.title,
+                })}
+              >
+                {errors.title?.message}
+              </p>
             </div>
             <div className="grid gap-3">
               <Label htmlFor="subtitle">Subtitle</Label>
@@ -98,9 +103,13 @@ export function ItemFormModal({
                 id="subtitle"
                 name="subtitle"
               />
-              {errors.subtitle?.message && (
-                <p className="text-red-600">{errors.subtitle.message}</p>
-              )}
+              <p
+                className={cn("text-red-600 invisible min-h-5 text-sm", {
+                  visible: errors.subtitle,
+                })}
+              >
+                {errors.subtitle?.message}
+              </p>
             </div>
           </div>
           <DialogFooter>
