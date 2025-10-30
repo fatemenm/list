@@ -57,21 +57,31 @@ export function ListManager() {
     });
   };
 
+  const deleteItem = (id: string) => {
+    setItems((previousItems) => {
+      const newItems = previousItems.filter((item) => item.id !== id);
+      localStorage.setItem("items", JSON.stringify(newItems));
+      return newItems;
+    });
+  };
+
   const submitHandler = (data: FormInputs) => {
     if (editingItemId) {
       editItem(editingItemId, data);
     } else {
       createItem(data);
     }
-    setIsModalOpen(false);
+    closeModal();
   };
 
-  const deleteHandler = (id: string) => {
-    setItems((previousItems) => {
-      const newItems = previousItems.filter((item) => item.id !== id);
-      localStorage.setItem("items", JSON.stringify(newItems));
-      return newItems;
-    });
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingItemId("");
+  };
+
+  const closeAlert = () => {
+    setIsAlertOpen(false);
+    setDeletingItemId("");
   };
 
   if (isLoading) return <div className="mt-100">Loading...</div>;
@@ -95,21 +105,17 @@ export function ListManager() {
       )}
       {isModalOpen && (
         <ItemFormModal
-          onClose={() => {
-            setIsModalOpen(false);
-            setEditingItemId("");
-          }}
+          onClose={() => closeModal()}
           onSubmit={submitHandler}
           editingItem={editingItem}
         />
       )}
       {isAlertOpen && (
         <ItemDeleteAlert
-          onClose={() => setIsAlertOpen(false)}
+          onClose={() => closeAlert()}
           onDelete={() => {
-            deleteHandler(deletingItemId);
-            setDeletingItemId("");
-            setIsAlertOpen(false);
+            deleteItem(deletingItemId);
+            closeAlert();
           }}
         />
       )}
