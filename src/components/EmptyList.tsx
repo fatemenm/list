@@ -1,12 +1,33 @@
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { ListPlus } from "lucide-react";
 
 export function EmptyList({ onCreate: createItem }: { onCreate: () => void }) {
   return (
-    <div className="w-full self-center flex flex-col gap-10 items-center">
-      <h2 className="text-2xl">Create your first Item!</h2>
-      <Button onClick={createItem} className="w-fit">
-        Create an Item
-      </Button>
-    </div>
+    <Empty>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <ListPlus />
+        </EmptyMedia>
+        <EmptyTitle>No List Item Yet</EmptyTitle>
+        <EmptyDescription>
+          You&apos;re list is empty.
+          <br />
+          Get started by creating your first item list.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button onClick={createItem} className="w-fit">
+          Create an Item
+        </Button>
+      </EmptyContent>
+    </Empty>
   );
 }
