@@ -41,7 +41,6 @@ export function ListManager() {
   };
 
   const editItem = (id: string, formData: FormInputs) => {
-    setEditingItemId("");
     setItems((prevItems) => {
       const newItems = prevItems.map((item) =>
         item.id === id
@@ -73,8 +72,6 @@ export function ListManager() {
       localStorage.setItem("items", JSON.stringify(newItems));
       return newItems;
     });
-    setDeletingItemId("");
-    setIsAlertOpen(false);
   };
 
   if (isLoading) return <div className="mt-100">Loading...</div>;
@@ -98,7 +95,10 @@ export function ListManager() {
       )}
       {isModalOpen && (
         <ItemFormModal
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingItemId("");
+          }}
           onSubmit={submitHandler}
           editingItem={editingItem}
         />
@@ -106,7 +106,11 @@ export function ListManager() {
       {isAlertOpen && (
         <ItemDeleteAlert
           onClose={() => setIsAlertOpen(false)}
-          onDelete={() => deleteHandler(deletingItemId)}
+          onDelete={() => {
+            deleteHandler(deletingItemId);
+            setDeletingItemId("");
+            setIsAlertOpen(false);
+          }}
         />
       )}
     </div>
