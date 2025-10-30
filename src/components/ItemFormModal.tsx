@@ -12,59 +12,57 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 type ItemModalProps = {
-  isOpen: boolean;
   onClose: (open: boolean) => void;
   onSubmit: (data: FormInputs) => void;
   editingItem?: Item;
 };
 
-type ModalTexts = {
-  title: string;
-  description: string;
-  primaryButton: string;
-};
-
 const initialForm: FormInputs = { title: "", subtitle: "" };
-const defaultModalTexts = {
+
+const createModeTexts = {
   title: "Create Item",
   description: "Create a new item.",
   primaryButton: "Create",
-};
+} as const;
+
+const editModeTexts = {
+  title: "Edit Item",
+  description: "Update the details of your item.",
+  primaryButton: "Save changes",
+} as const;
 
 export function ItemFormModal({
-  isOpen,
   onClose,
   onSubmit,
   editingItem,
 }: ItemModalProps) {
-  const [form, setForm] = useState<FormInputs>(initialForm);
-  const [modalTexts, setModalTexts] = useState<ModalTexts>(defaultModalTexts);
+  const [modalTexts, setModalTexts] = useState<
+    typeof createModeTexts | typeof editModeTexts
+  >(createModeTexts);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormInputs>({ defaultValues: initialForm });
 
   useEffect(() => {
     if (editingItem) {
-      setForm({ title: editingItem.title, subtitle: editingItem.subtitle });
-      setModalTexts({
-        title: "Edit Item",
-        description: "Update the details of your item.",
-        primaryButton: "Save changes",
-      });
+      reset({ title: editingItem.title, subtitle: editingItem.subtitle });
+      setModalTexts(editModeTexts);
+    } else {
+      reset(initialForm);
+      setModalTexts(createModeTexts);
     }
-    return () => setModalTexts(defaultModalTexts);
-  }, [editingItem]);
+  }, [editingItem, reset]);
 
   return (
-    <Dialog modal open={isOpen} onOpenChange={onClose}>
+    <Dialog modal defaultOpen={true} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit(form);
-            setForm(initialForm);
-          }}
-          className="flex flex-col gap-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <DialogHeader>
             <DialogTitle>{modalTexts.title}</DialogTitle>
             <DialogDescription>{modalTexts.description}</DialogDescription>
@@ -73,20 +71,36 @@ export function ItemFormModal({
             <div className="grid gap-3">
               <Label htmlFor="title">Title</Label>
               <Input
+                {...register("title", {
+                  required: "Title is required.",
+                  minLength: {
+                    value: 3,
+                    message: "Title must be at least 3 characters.",
+                  },
+                })}
                 id="title"
                 name="title"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
+              {errors.title && (
+                <p className="text-red-600">{errors.title.message}</p>
+              )}
             </div>
             <div className="grid gap-3">
               <Label htmlFor="subtitle">Subtitle</Label>
               <Input
+                {...register("subtitle", {
+                  required: "Subtitle is required",
+                  minLength: {
+                    value: 3,
+                    message: "Subtitle must be at least 3 characters.",
+                  },
+                })}
                 id="subtitle"
                 name="subtitle"
-                value={form.subtitle}
-                onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
               />
+              {errors.subtitle?.message && (
+                <p className="text-red-600">{errors.subtitle.message}</p>
+              )}
             </div>
           </div>
           <DialogFooter>
