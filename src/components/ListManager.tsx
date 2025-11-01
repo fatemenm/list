@@ -6,6 +6,7 @@ import { ItemFormModal } from "./ItemFormModal";
 import ItemDeleteAlert from "./ItemDeleteAlert";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
+import { toast } from "sonner";
 
 export function ListManager() {
   const [items, setItems] = useState<Item[]>([]);
@@ -70,8 +71,10 @@ export function ListManager() {
   const submitHandler = (data: FormInputs) => {
     if (editingItemId) {
       editItem(editingItemId, data);
+      toast.success("Item updated successfully");
     } else {
       createItem(data);
+      toast.success("New item created successfully");
     }
     closeModal();
   };
