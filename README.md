@@ -1,73 +1,106 @@
-# React + TypeScript + Vite
+# List App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React-based application for managing a list of items, featuring full CRUD (Create, Read, Update, Delete) functionality.
 
-Currently, two official plugins are available:
+## 📸 Preview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![alt text](./assets/preview.png)
 
-## React Compiler
+## ✅ Core Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This application meets all the specified requirements:
 
-## Expanding the ESLint configuration
+- **List View:** Displays all items with their title, subtitle, and creation date.
+- **Create Item:** A "Create" button opens a modal form to add a new item to the list.
+- **Update Item:** An "Edit" button on each item opens the _same_ modal, pre-filled with the item's data, to allow updates.
+- **Delete Item:** A "Delete" button on each item removes it from the list.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Above & Beyond: Additional Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+I implemented several features beyond the core requirements to build a more robust and user-friendly application:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **`localStorage` Persistence:** Saves the user's list between sessions, with robust date serialization to prevent data corruption.
+- **Initialization Loading State:** Shows a spinner while loading data from storage to prevent UI pop-in.
+- "**Edited At" Timestamp:** Tracks item edits separately from the creation date for a clearer history.
+- **`react-hook-form` Validation:** Implements instant, inline error messages directly under the form fields.
+- **Confirm-Delete Modal:** Prevents accidental data loss with a clear confirmation dialog before deletion.
+- **Success Toasts (`Sonner`):** Provides non-intrusive "Item Created" and "Item Updated" feedback.
+- **Guided Empty State:** Guides new users to create their first item instead of showing a blank list.
+- **Fully Responsive Design:** Ensures a clean and usable experience on all devices, from mobile to desktop.
+- **Typed & Modular Code:** Uses TypeScript and small, single-responsibility components for a clean, maintainable, and testable architecture.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Tech Stack & Key Libraries
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Category             | Technology                            |
+| :------------------- | :------------------------------------ |
+| **Core**             | React (Functional Components & Hooks) |
+| **Language**         | TypeScript / JavaScript               |
+| **Styling**          | Tailwind CSS                          |
+| **Form Management**  | React Hook Form                       |
+| **State Management** | `useState`                            |
+| **UI Components**    | shadcn/ui                             |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧠 Architectural & Design Decisions
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Here are the key technical choices I made and why:
+
+1.  **Reusable Modal**
+
+    > I used one modal for both "Create" and "Edit." It just checks for an `editingItem` prop to know whether to pre-fill the form. This keeps the logic and UI in one place, and making it easy to update.
+
+2.  **Simple State (`useState`)**
+
+    > I used React's built-in `useState` instead of a big state library. It's all this app needs, keeping it fast and easy to understand. It's simple to add Zustand or React Query later if the app grows.
+
+3.  **Performant Forms (React Hook Form)**
+
+    > I chose **React Hook Form** because it's fast and makes handling form validation clean and simple. The error logic stays right with the form.
+
+4.  **Single Source of Truth**
+
+    > One main component manages the list state and all updates to `localStorage`. This prevents bugs by ensuring the data is always consistent.
+
+5.  **Safe Date Handling**
+
+    > I save dates as strings (text) in `localStorage` and turn them back into `Date` objects when the app loads. This prevents common bugs where dates are treated as text.
+
+6.  **Accessibility by Default**
+
+    > I used **shadcn/ui** because it gives me great accessibility (like keyboard navigation and focus control in modals) right out of the box, making the app usable for everyone.
+
+7.  **Easy to Test & Extend**
+    > Using **TypeScript** and small, focused components makes the code clean and easy to test. This design means I can easily add new features, like Zod validation or a real backend, later on.
+
+## 🚀 Getting Started Locally
+
+To run this project on your local machine:
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/fatemenm/list
+    ```
+
+2.  **Navigate to the project directory:**
+
+    ```bash
+    cd list
+    ```
+
+3.  **Install dependencies:**
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+4.  **Run the development server:**
+
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+The application will be available at `http://localhost:5173`.
