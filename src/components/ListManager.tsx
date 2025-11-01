@@ -4,6 +4,8 @@ import { EmptyList } from "@/components/EmptyList";
 import { List } from "@/components/List";
 import { ItemFormModal } from "./ItemFormModal";
 import ItemDeleteAlert from "./ItemDeleteAlert";
+import { Button } from "./ui/button";
+import { Spinner } from "./ui/spinner";
 
 export function ListManager() {
   const [items, setItems] = useState<Item[]>([]);
@@ -84,7 +86,15 @@ export function ListManager() {
     setDeletingItemId("");
   };
 
-  if (isLoading) return <div className="mt-100">Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="mt-100">
+        <Button size="sm" variant="secondary">
+          <Spinner />
+          Loading...
+        </Button>
+      </div>
+    );
   return (
     <div className="w-xs sm:w-lg md:w-xl lg:w-2xl flex">
       {items.length > 0 ? (
