@@ -49,6 +49,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: oklch(98.5% 0.002 247.839);
 }
 
 @theme inline {
@@ -129,5 +130,11 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@media (max-width: 425px) {
+  :root {
+    font-size: 0.9rem;
   }
 }

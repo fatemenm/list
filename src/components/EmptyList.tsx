@@ -11,7 +11,7 @@ import { ListPlus } from "lucide-react";
 
 export function EmptyList({ onCreate: createItem }: { onCreate: () => void }) {
   return (
-    <Empty>
+    <Empty className="h-screen">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <ListPlus />
@@ -20,7 +20,7 @@ export function EmptyList({ onCreate: createItem }: { onCreate: () => void }) {
         <EmptyDescription>
           You&apos;re list is empty.
           <br />
-          Get started by creating your first item list.
+          Get started by creating your first list item.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>

@@ -12,7 +12,7 @@ export function ListItem({
   onDelete: (id: string) => void;
 }) {
   return (
-    <div className="flex flex-row justify-between p-4 bg-gray-50  rounded-md gap-10 shadow">
+    <div className="flex flex-row justify-between p-4 bg-white border border-gray-100 rounded-md gap-10 shadow">
       <div className="flex flex-col gap-1 grow w-2/3">
         <h2 className="text-lg font-medium text-left">{item.title}</h2>
         <div className="flex flex-col gap-4  justify-between w-full text-sm">
@@ -24,18 +24,18 @@ export function ListItem({
           </span>
         </div>
       </div>
-      <div className="flex flex-row gap-3 items-center">
+      <div className="flex flex-col justify-center sm:flex-row gap-3 items-center">
         <Button
           id={item.id}
           onClick={(e) => onEdit(e.currentTarget.id)}
-          className="shadow text-indigo-400 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-500"
+          className="shadow-sm cursor-pointer text-gray-500 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-400"
         >
           <SquarePen />
         </Button>
         <Button
           id={item.id}
           onClick={(e) => onDelete(e.currentTarget.id)}
-          className="shadow text-rose-400 bg-rose-50 hover:bg-rose-100 hover:text-rose-500"
+          className="shadow-sm cursor-pointer text-gray-500 bg-gray-100 hover:bg-rose-50 hover:text-rose-400"
         >
           <Trash2 />
         </Button>

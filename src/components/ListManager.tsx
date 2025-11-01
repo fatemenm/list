@@ -86,7 +86,7 @@ export function ListManager() {
 
   if (isLoading) return <div className="mt-100">Loading...</div>;
   return (
-    <div className="w-2xl flex h-screen">
+    <div className="w-xs sm:w-lg md:w-xl lg:w-2xl flex">
       {items.length > 0 ? (
         <List
           items={items}
